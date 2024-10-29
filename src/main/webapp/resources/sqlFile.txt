@@ -1,0 +1,21 @@
+-- 24.10.29
+
+-- 데이터베이스생성
+create database springdb2;
+
+-- 권한부여
+grant all privileges on springdb2.* to 'springUser'@'localhost' with grant option;
+-- 권한 설정 메모리 반영
+flush privileges;
+
+use springdb2;
+
+create table board(
+bno bigint auto_increment,
+title varchar(500) not null,
+writer varchar(500) not null,
+content text,
+is_del varchar(5) default 'N',
+reg_date datetime default now(),
+read_count int default 0,
+primary key(bno));
