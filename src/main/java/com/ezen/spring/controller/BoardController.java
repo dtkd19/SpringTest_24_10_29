@@ -9,9 +9,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.ezen.spring.domain.BoardDTO;
 import com.ezen.spring.domain.BoardVO;
+import com.ezen.spring.domain.FileVO;
 import com.ezen.spring.domain.PagingVO;
+import com.ezen.spring.handler.FileHandler;
 import com.ezen.spring.handler.PagingHandler;
 import com.ezen.spring.service.BoardService;
 
@@ -25,18 +29,34 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardController {
 	/* 생성자 주입시 객체는 final로 생성 */
 	private final BoardService bsv;
-
+	private final FileHandler fh;
+	
+	
 	// return void => 온 경로 그대로 리턴 /board/register => /board/register.jsp 
 	@GetMapping("/register")
 	public void register() {}
 
+	// 첨부파일 => multipartFile / 여러개... multipartFile[]
 	@PostMapping("/insert")
-	public String insert(BoardVO bvo) {
+	public String insert(BoardVO bvo, MultipartFile[] files) {
 		log.info(">>> insert bvo > {} ", bvo);
-		int isOk = bsv.insert(bvo);
 		
+		List<FileVO> flist = null;
+		
+		if(files[0].getSize() > 0) {
+			// 파일의 내용이 있다면
+			flist = fh.uploadFiles(files);
+			log.info(">>> flist > {}", flist);
+		}
+		
+		// files 정보를 이용하여 => List<FileVO> 변환을 하는 핸들러
+		// FileHandler => return List<FileVO> + 파일 저장 
+		
+		BoardDTO bdto = new BoardDTO(bvo, flist); // bvo, flist
+		
+		int isOk = bsv.insert(bdto);
 		log.info(" insert >> {} ", ( isOk >0? "성공" : "실패" ));
-		// 컨트롤러의 mapping 위치로 연결할 때 redirect:
+//		// 컨트롤러의 mapping 위치로 연결할 때 redirect:
 		return "redirect:/";
 		
 	}
@@ -67,18 +87,24 @@ public class BoardController {
 	@GetMapping({"/detail","/modify"})
 	public void detail(Model m, int bno, HttpServletRequest request) {
 				
-		BoardVO bvo = bsv.getDetail(bno);
+//		BoardVO bvo = bsv.getDetail(bno);
 		
 		String path = request.getServletPath();
 		log.info(">>>>>path > {}" , path);
 		
+		BoardDTO bdto = bsv.getDetail(bno);
+		
 		if(path.equals("/board/detail")) {
 			int readCountOk = bsv.readCount(bno);
-			bvo = bsv.getDetail(bno);
+			bdto = bsv.getDetail(bno);
 		}
 		
+		m.addAttribute("bdto",bdto);
 		
-		m.addAttribute("bvo",bvo);
+		
+				
+//		m.addAttribute("bvo",bvo);
+		
 	}
 	
 	@PostMapping("/update")

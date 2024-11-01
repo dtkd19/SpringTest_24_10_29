@@ -21,4 +21,7 @@ public interface BoardDAO {
 
 	int readCount(int bno);
 
+	long getOneBno();
+
+
 }
