@@ -235,9 +235,24 @@
 		    <version>2.4.1</version>
 		    <type>pom</type>
 		</dependency>
-		
+		<!-- 스케쥴러 관련 quartz 2.3.2 / quarts-jobs 2.3.2 -->
+		<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
+		<dependency>
+		    <groupId>org.quartz-scheduler</groupId>
+		    <artifactId>quartz</artifactId>
+		    <version>2.3.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz-jobs -->
+		<dependency>
+		    <groupId>org.quartz-scheduler</groupId>
+		    <artifactId>quartz-jobs</artifactId>
+		    <version>2.3.2</version>
+		</dependency>
 				
-		<!-- 시큐리티, 스케쥴러 관련 추가 -->
+				
+				
+				
+		<!-- 시큐리티 관련 -->
 		
 				    
 	</dependencies>

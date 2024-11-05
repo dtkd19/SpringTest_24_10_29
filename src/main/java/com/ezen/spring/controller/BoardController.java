@@ -6,9 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.spring.domain.BoardDTO;
@@ -47,10 +51,11 @@ public class BoardController {
 			// 파일의 내용이 있다면
 			flist = fh.uploadFiles(files);
 			log.info(">>> flist > {}", flist);
-		}
-		
+			int isOk = bsv.hasFile(bvo.getBno());
+		}		
 		// files 정보를 이용하여 => List<FileVO> 변환을 하는 핸들러
 		// FileHandler => return List<FileVO> + 파일 저장 
+		
 		
 		BoardDTO bdto = new BoardDTO(bvo, flist); // bvo, flist
 		
@@ -61,12 +66,16 @@ public class BoardController {
 		
 	}
 	@GetMapping("/list")
-	public String list(Model m, PagingVO pgvo ) {
+	public String list(Model m, PagingVO pgvo , BoardVO bvo) {
 		//request.setAttrbute()
 		//Model 객체가 해당일을 대신해줌
 		
 //		PagingVO pgvo = new PagingVO();
+		
+		
 		List<BoardVO> list = bsv.getList(pgvo);
+		
+		int isOk = bsv.hasFile(bvo.getBno());
 		
 		// totalCount 구해서 PagingHandler에 매개변수로 전달 
 		int totalCount = bsv.getTotal(pgvo);
@@ -74,7 +83,7 @@ public class BoardController {
 		log.info(">>> totalCount > {}" , totalCount);
 		
 		PagingHandler ph = new PagingHandler(totalCount, pgvo);
-			
+		
 		m.addAttribute("list",list);
 		m.addAttribute("ph",ph);
 		return "/board/list";
@@ -108,9 +117,19 @@ public class BoardController {
 	}
 	
 	@PostMapping("/update")
-	public String update(BoardVO bvo) {
+	public String update(BoardVO bvo, @RequestParam(name="files", required = false)MultipartFile[] files) {
 		
-		int isOk = bsv.update(bvo);
+		List<FileVO> flist = null;
+		
+		if(files[0].getSize() > 0) {
+			flist = fh.uploadFiles(files);
+			log.info(">>> flist > {}", flist);
+			int isOk = bsv.hasFile(bvo.getBno());
+		}
+		
+		int isOk = bsv.update(new BoardDTO(bvo,flist));
+		
+//		int isOk = bsv.update(bvo);
 		
 		return "redirect:/board/detail?bno=" +bvo.getBno();
 		
@@ -125,8 +144,19 @@ public class BoardController {
 	}
 	
 	
-	
-	
-	
+	@ResponseBody
+	@DeleteMapping(value="/file/{uuid}")
+	public String fileDelete(@PathVariable("uuid") String uuid) {
+		
+		log.info(">>> modfiy uuid > {} ", uuid);
+		
+		int isOk2 = bsv.hasFileDelete(uuid);
+
+		int isOk= bsv.fileDelete(uuid);
+		
+		
+		return isOk > 0 ? "1" : "0";
+	}
+
 
 }

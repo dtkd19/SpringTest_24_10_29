@@ -49,10 +49,15 @@
 			<c:forEach items="${list }" var="bvo">
 				<tr>
 					<td>${bvo.bno }</td>
-					<td><a href="/board/detail?bno=${bvo.bno } ">${bvo.title }</a></td>
+					<td><a href="/board/detail?bno=${bvo.bno } ">${bvo.title }</a> 
+					<c:if test="${bvo.cmtQty > 0 }">
+					<span style="color: red">[${bvo.cmtQty }]</span> 
+					</c:if>
+					</td>
 					<td>${bvo.writer }</td>
 					<td>${bvo.regDate }</td>
-					<td>${bvo.readCount }</td>
+					<td>${bvo.readCount}
+					<c:if test="${bvo.hasFile > 0 }"> <span style="color: red">[${bvo.hasFile }]</span> </c:if> </td>  
 				</tr>
 			</c:forEach>
 		</tbody>

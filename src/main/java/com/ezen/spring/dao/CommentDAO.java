@@ -21,4 +21,6 @@ public interface CommentDAO {
 
 	int getTotalCount(long bno);
 
+	CommentVO getCvo(long cno);
+
 }

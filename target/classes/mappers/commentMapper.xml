@@ -30,4 +30,8 @@
 	select count(cno) from comment where bno = #{bno}
 </select>
 
+<select id="getCvo" resultType="com.ezen.spring.domain.CommentVO">
+	select * from comment where cno = #{cno}
+</select>
+
 </mapper>

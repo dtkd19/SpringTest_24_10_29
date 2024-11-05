@@ -49,8 +49,13 @@
  	select max(bno) from board
  </select>
  
+<update id="updateCmtCount">
+	update board set cmt_qty = cmt_qty + 1 where bno = #{bno}
+</update>
  
- 
+ <update id="hasFile">
+ 	update board b set has_file = (select Count(*) from file f where f.bno = b.bno);
+ </update>
  
  <!-- search 동적 쿼리 -->
  
@@ -83,8 +88,13 @@
  	</if>
  </sql>
  
+ <update id="hasFileDelete">
+ 	update board set has_file = has_file - 1 where bno = #{bno}
+ </update>
  
- 
+ <update id="cmtQtyDelete">
+ 	update board set cmt_qty = cmt_qty - 1 where bno = #{bno}
+ </update>
  
  
  </mapper>   

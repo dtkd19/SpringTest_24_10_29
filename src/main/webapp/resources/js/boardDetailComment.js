@@ -174,7 +174,7 @@ async function removeCommentToServer(cno) {
         return result;
 
     } catch (error) {
-        
+        console.log(error);
     }
 }
 

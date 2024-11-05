@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ezen.spring.domain.CommentVO;
 import com.ezen.spring.domain.PagingVO;
 import com.ezen.spring.handler.PagingHandler;
+import com.ezen.spring.service.BoardService;
 import com.ezen.spring.service.CommentService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CommentController {
 	
 	private final CommentService csv;
+	private final BoardService bsv; 
 	
 	@PostMapping("/post")
 	public ResponseEntity<String> post(@RequestBody CommentVO cvo) {
@@ -38,9 +40,12 @@ public class CommentController {
 		
 		int isOk = csv.post(cvo);
 		
-		return isOk > 0 ?
-				 new ResponseEntity<String>("1", HttpStatus.OK) :
-				 new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);  // 500 error 
+		 if (isOk > 0) {
+	            bsv.updateCmtCount(cvo.getBno()); 
+	            return new ResponseEntity<String>("1", HttpStatus.OK);
+	        } else {
+	            return new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);  // 500 error 
+	        }
 	}
 	
 //	@GetMapping(value="/{bno}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -80,14 +85,21 @@ public class CommentController {
 		
 		int isOk = csv.modify(cvo);
 			
-		return isOk > 0 ? "1" : "0";
+		  if (isOk > 0) {
+	            return "1";
+	        } else {
+	            return "0";
+	        }
 	}
     
 	@ResponseBody
 	@DeleteMapping(value="/{cno}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String delete(@PathVariable("cno") long cno) {
 		
+		int isOk2 = bsv.cmtQtyDelete(cno);
+
 		int isOk = csv.delete(cno);
+		
 		
 		return isOk > 0 ? "1" : "0";
 	}

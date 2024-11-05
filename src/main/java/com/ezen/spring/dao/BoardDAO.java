@@ -23,5 +23,13 @@ public interface BoardDAO {
 
 	long getOneBno();
 
+	int updateCmtCount(long bno);
+
+	int hasFile(long bno);
+
+	int hasFileDelete(long bno);
+
+	int cmtQtyDelete(long bno);
+
 
 }
