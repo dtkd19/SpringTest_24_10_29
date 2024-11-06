@@ -44,12 +44,14 @@ function spreadCommentList(bno, page = 1){
                 li += `<div class="fw-bold">${cvo.writer}</div>`;
                 li += `${cvo.content}`;
                 li += `</div>`;
-                // 수정 삭제 버튼 추가
                 li += `<span class="badge text-bg-primary rounded-pill">${cvo.regDate}</span>`;
-                li += `<div class="d-grid gap-2 d-md-flex justify-content-md-end">`;
-                li += `<button type="button" data-cno=${cvo.cno} class="btn btn-outline-warning btn-sm mod" data-bs-toggle="modal" data-bs-target="#myModal">%</button>`;
-                li += `<button type="button" data-cno=${cvo.cno} class="btn btn-outline-danger btn-sm del">X</button>`;
-                li += `</div>`;
+                // 수정 삭제 버튼 추가   
+                if( authNick == cvo.writer){
+                    li += `<div class="d-grid gap-2 d-md-flex justify-content-md-end">`;
+                    li += `<button type="button" data-cno=${cvo.cno} class="btn btn-outline-warning btn-sm mod" data-bs-toggle="modal" data-bs-target="#myModal">%</button>`;
+                    li += `<button type="button" data-cno=${cvo.cno} class="btn btn-outline-danger btn-sm del">X</button>`;
+                    li += `</div>`;
+                }
                 li += `</li>`;
                 ul.innerHTML += li;           
             } 
@@ -65,7 +67,6 @@ function spreadCommentList(bno, page = 1){
             } else{
                 moreBtn.style.visibility = 'hidden';
             }
-
 
         } else{
             ul.innerHTML = `<li class="list-group-item">Comment List Empty</li>`;

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 
 <jsp:include page="../layout/header.jsp" />
@@ -70,14 +71,19 @@
 	<a href="/board/delete?bno=${bvo.bno }"><button type="button" class="btn btn-danger">delete</button></a>
 	  <br>
 	  <hr>
-	
 	<!-- comment line -->
 	<!-- comment post -->
+	<sec:authorize access="isAuthenticated()">
 	<div class="input-group mb-3">
-	  <span class="input-group-text" id="cmtWriter">tester1@tester.com</span>
+	  <span class="input-group-text" id="cmtWriter">
+		 <sec:authentication property="principal.uvo.nickName" var="authNick"/> 
+	  	 ${authNick }	  
+	  </span>
 	  <input type="text"  id="cmtText" class="form-control" placeholder="Add Comment" aria-label="Comment" aria-describedby="basic-addon1">
 	  <button type="button" id="cmtAddBtn"  class="btn btn-outline-success">post</button>
+	  <c:set value="${authNick }" var="nick" />
 	</div>	
+	 </sec:authorize>
 	
 	
 	
@@ -122,6 +128,11 @@
 	console.log(bnoVal);
 	</script>
 	
+	<script type="text/javascript">
+	let authNick = `<c:out value ="${nick}" />`;
+	console.log(authNick);
+	</script>
+	
 	<script type="text/javascript" src="/resources/js/boardDetailComment.js"></script>
 	
 	
@@ -129,17 +140,7 @@
 		spreadCommentList(bnoVal);
 	</script>
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-		
+
 </div>
 
 
